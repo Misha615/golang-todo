@@ -23,12 +23,8 @@ func (w *ResponseWriter) WriteHeader(statusCode int) {
 }
 
 func (w *ResponseWriter) GetStatusCode() int {
-	return w.statusCode
-}
-
-func (w *ResponseWriter) GetStatusCodeOrPanic() int {
 	if w.statusCode == StatusCodeUninitialized {
-		panic("no status code set")
+		return http.StatusOK
 	}
 
 	return w.statusCode
