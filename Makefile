@@ -11,6 +11,7 @@ env-down:
 	@docker compose down todoapp-postgres
 
 env-cleanup:
+	@make fix-postgres-perms
 	@read -p "clean all volumes? Danger of wasting data. [y/N]: " ans; \
 	if [ "$$ans" = "y" ]; then \
 		make fix-postgres-perms && \
