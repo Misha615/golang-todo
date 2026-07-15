@@ -11,6 +11,7 @@ env-down:
 	@docker compose down todoapp-postgres
 
 env-cleanup:
+	@make fix-postgres-perms
 	@read -p "clean all volumes? Danger of wasting data. [y/N]: " ans; \
 	if [ "$$ans" = "y" ]; then \
 		make fix-postgres-perms && \
@@ -58,6 +59,18 @@ migrate-action:
 	docker compose run --rm todoapp-postgres-migrate \
 		-path /migrations \
 		-database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@todoapp-postgres:5432/${POSTGRES_DB}?sslmode=disable "${action}"
+
+logs-cleanup:
+	@make fix-postgres-perms
+	@read -p "clean all log files? Danger of wasting data. [y/N]: " ans; \
+	if [ "$$ans" = "y" ]; then \
+		make fix-postgres-perms && \
+		docker compose down todoapp-postgres port-forwarder && \
+		rm -rf out/pgdata && \
+		echo "Logs are deleted"; \
+	else \
+		echo "Deletion is canceled"; \
+	fi
 
 todoapp-run:
 	@make fix-postgres-perms
