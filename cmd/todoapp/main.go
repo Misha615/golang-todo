@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	core_config "github.com/Misha615/golang-todo/internal/core/config"
 	core_logger "github.com/Misha615/golang-todo/internal/core/logger"
 	core_http_middleware "github.com/Misha615/golang-todo/internal/core/transport/http/middleware"
 	core_http_server "github.com/Misha615/golang-todo/internal/core/transport/http/server"
@@ -26,8 +27,8 @@ var (
 )
 
 func main() {
-
-	time.Local = timeZone
+	cfg := core_config.NewConfigMust()
+	time.Local = cfg.TimeZone
 
 	ctx, cancel := signal.NotifyContext(
 		context.Background(),
@@ -42,7 +43,7 @@ func main() {
 	}
 	defer logger.Close()
 
-	logger.Debug("application time zone", zap.Any("zone", timeZone))
+	logger.Debug("application time zone", zap.Any("zone", time.Local))
 
 	logger.Debug("initializing postgres connection pool")
 	/*pool, err := core_postgres_pool.NewConnectionPool(
